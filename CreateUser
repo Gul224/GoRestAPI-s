@@ -1,0 +1,70 @@
+Feature: Create User
+To check user is created 
+
+
+Background:
+        Given url public-api/users
+        And Authorization
+        
+
+Scenario: Gul enters valid data 
+       Given path CreateUser
+       And header Content-Type = 'application/json'
+       And request '{
+    "name": "Tenali Ramakrishna",
+    "gender": "Male",
+    "email": "gul@15ce.com",
+    "status": "Active"
+}'
+     When method POST
+     Then status 200 
+
+Scenario: Gul enters Invalid data
+      Given path CreateUser
+      And header Content-Type = 'application/json'
+      And request '{
+    "name": "Tenali Ramakrishna",
+    "gender": "Male",
+    "email": "gul15cecom",
+    "status": "Active"
+}'
+     When method POST
+     Then status 400
+     * match response contains {message: "Invalid email id"}
+
+Scenario: Blank data
+      Given path CreateUser
+      And header Content-Type = 'application/json'
+      And request '{
+    "name": "   ",
+    "gender": "   ",
+    "email": "   ",
+    "status": "   "
+}'
+     When method POST
+     Then status 422
+     * match response contains { message: "can't be blank"}
+
+Scenario: Null name and email id
+     Given Create user
+     And header Content-Type = 'application/json'
+     And request  '{
+    "name": ,
+    "gender": "   ",
+    "email":  ,
+    "status": "   "
+}'
+    When method POST
+    Then status 500
+
+Scenario: All Null fields 
+    Given Create User
+    And header Content-Type = 'application/json'
+    And request '{
+    "name":     ,
+    "gender":   ,
+    "email":    ,
+    "status": 
+}'
+    When method POST
+    Then status 500

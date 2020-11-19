@@ -1,0 +1,84 @@
+Feature: Update User
+To check user is Updated
+
+
+Background:
+        Given url public-api/users/1441
+        And Authorization
+
+Scenario: Update Name - Valid data 
+       Given path Update User
+       And header Content-Type = 'application/json'
+       And request '{
+    "name": "Gul.s",
+    "gender": "Female",
+    "email": "gul@.com",
+    "status": "Active"
+}'
+     When method POST
+     Then status 200 
+
+Scenario: Update Email id - Valid data 
+      Given path Update User
+       And header Content-Type = 'application/json'
+       And request '{
+    "name": "Gul.s",
+    "gender": "Female",
+    "email": "gul.s@gmail.com",
+    "status": "Active"
+}'
+     When method POST
+     Then status 200
+     
+Scenario: Invalid Data
+   Given path Update User
+       And header Content-Type = 'application/json'
+       And request '{
+    "name": "Gul.s",
+    "gender": "Female",
+    "email": "gul.s@gmail.com",
+    "status": "Act"
+}'
+     When method POST
+     Then status 422 
+     *match response contains {message: "can be Active or Inactive"}
+
+
+Scenario: Blank Data
+   Given path Update User
+       And header Content-Type = 'application/json'
+       And request '{
+    "name": "  ",
+    "gender": "Female",
+    "email": "gul.s@gmail.com",
+    "status": "Act"
+}'
+     When method POST
+     Then status 422 
+     * match response contains {"field": "name",
+            "message": "can't be blank"}
+
+Scenario: Null name field
+     Given path Update User
+       And header Content-Type = 'application/json'
+       And request '{
+    "name": ,
+    "gender": "Female",
+    "email": "gul.s@gmail.com",
+    "status": "Act"
+}'
+     When method POST
+     Then status 400
+
+ Scenario:All Null field
+     Given path Update User
+       And header Content-Type = 'application/json'
+       And request '{
+    "name": ,
+    "gender": ,
+    "email": ,
+    "status": 
+}'
+     When method POST
+     Then status 400
+
